@@ -51,7 +51,37 @@ def assistant():
         if "set a reminder" in command:
             speak("Sure, what should I remind you about?")
             reminder_text = listen()
-            speak(f"I will remind you to {reminder_text} in 5 minutes.")
+
+            while True:
+                speak(
+                    "When should I remind you? Please provide the time in HH:MM AM/PM format.")
+                reminder_time = listen()
+
+                try:
+                    reminder_time = reminder_time.replace(".", "")
+                    reminder_time = datetime.datetime.strptime(
+                        reminder_time.lower(), "%I:%M %p").time()
+                    current_time = datetime.datetime.now().time()
+
+                    if reminder_time >= current_time:
+                        speak(
+                            f"You want me to remind you about {reminder_text} at {reminder_time.strftime('%I:%M %p')}. Is that correct?")
+                        confirmation = listen()
+
+                        if "yes" in confirmation:
+                            speak("Reminder set!")
+                            break
+                        else:
+                            speak("Got it, reminder not set.")
+                            break
+
+                    else:
+                        speak(
+                            "The provided time has already passed. Please choose another time.")
+
+                except ValueError:
+                    speak(
+                        "Invalid time format. Please provide the time in HH:MM AM/PM format. For example, 10:30 AM.")
 
         elif "create a to-do list" in command:
             speak("Let's create a to-do list. Please start listing tasks.")
