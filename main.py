@@ -70,7 +70,7 @@ def assistant():
             break
 
         else:
-            speak("I'm sorry, I didn't catch that. Can you repeat?")
+            speak("I'm sorry, I didn't catch that. Can you repeat again?")
 
 
 if __name__ == "__main__":
