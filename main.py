@@ -1,16 +1,24 @@
-# A simple voice assistant that can perform basic tasks like setting reminders, creating to-do lists, and searching the web.
+# A simple voice assistant that can perform basic tasks like setting reminders, creating to-do lists, searching the web and playing music from spotify.
 # Author: Arman
 
 import speech_recognition as sr
 import pyttsx3
 import datetime
 import webbrowser
+import spotipy
+from spotipy.oauth2 import SpotifyClientCredentials
+import requests
+import os
+from dotenv import load_dotenv
+
+load_dotenv()
 
 recognizer = sr.Recognizer()
 engine = pyttsx3.init()
 
 
 def speak(text):
+    engine = pyttsx3.init()
     engine.say(text)
     engine.runAndWait()
 
@@ -64,6 +72,37 @@ def assistant():
             url = f"https://www.google.com/search?q={search_query}"
             webbrowser.open(url)
             speak(f"Here are the search results for {search_query}.")
+
+        elif "play music" in command:
+            speak("Sure, what music do you want to play?")
+            song_name = listen()
+
+            client_id = os.getenv('CLIENT_ID')
+            client_secret = os.getenv('CLIENT_SECRET')
+            client_credentials_manager = SpotifyClientCredentials(
+                client_id=client_id, client_secret=client_secret)
+            sp = spotipy.Spotify(
+                client_credentials_manager=client_credentials_manager)
+
+            results = sp.search(q=song_name, limit=1)
+
+            if results['tracks']['items']:
+                track = results['tracks']['items'][0]
+                if track['preview_url']:
+                    preview_url = track['preview_url']
+                    print(
+                        f"Downloading '{track['name']}' by {', '.join([artist['name'] for artist in track['artists']])}")
+
+                    response = requests.get(preview_url)
+                    audio_file_path = f'{song_name}.mp3'
+                    with open(audio_file_path, 'wb') as f:
+                        f.write(response.content)
+
+                    os.startfile(audio_file_path)
+                else:
+                    print(f"No preview available for '{song_name}'")
+            else:
+                print(f"No track found for '{song_name}'")
 
         elif "exit" in command or "bye" in command:
             speak("Goodbye!")
