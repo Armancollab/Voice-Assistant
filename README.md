@@ -9,8 +9,6 @@ This is a Voice Assistant program that allows you to interact with your computer
 - Play Music from Spotify
 - Search the web
 
-- [Add more features here]
-
 ## Getting Started
 
 ### Prerequisite
