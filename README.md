@@ -17,15 +17,11 @@ This is a Voice Assistant program that allows you to interact with your computer
 
 ### Installation
 
-1. Clone the repository:
 
    ```shell
    git clone https://github.com/your-username/voice-assistant.git
+
    pip install - requirements.txt
+
    python main.py
    
-
-1. Clone the repository:
-
-   ```shell
-   git clone https://github.com/your-username/voice-assistant.git
